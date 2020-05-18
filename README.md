@@ -5,33 +5,39 @@ Bueno-defined persistent functions/scripts on BigQuery by using SQL expressions 
 ## Prerequisites
 * [Pyenv](https://github.com/pyenv/pyenv) version manager
 * [Poetry](https://python-poetry.org/) packaging and dependency manager
+* [Direnv](https://direnv.net/) for loading environment variables
 
-## Internal Repository
+## Setup
+
+### Internal Repository Credentials
 
 Store the credentials of nexus internal repository. If you do not specify the password, you will be prompted to enter.
 ```
-❯ poetry config http-basic.bueno username password
+❯ poetry config http-basic.bueno <username> <password>
 ```
 
-## Install Application-specific Python
+### Python Versions
 
-Install the Python version using `pyenv`.
+Install the application-specific Python versions (defined in `.python-version` file).
 ```
-❯ pyenv install 3.8.2
-```
-Additionaly, you can set the local application-specific Python version into `.python-version'.
-```
-❯ pyenv local 3.8.2
+❯ pyenv install
 ```
 
-## Setup and Resolve Dependencies
+### Resolve Dependencies
 
-Create and activate the virtual environment inside the project's root directory (`.venv`) and then install all the dependencies.
+Create a virtual environment locally if there is no one and install all the dependencies.
 ```
 ❯ poetry install
 ```
 
-Virtual env has been set to be in-project. Check out `poetry.toml` for settings.
+**Note:** Poetry has been configured to create virtual environment inside the project's root directory under `.venv`. You may need to set Python interpreter as `.venv/bin/python` in your editor if the packages are still unresolved.
+
+### Load Environment Variables
+
+Make a copy of `.envrc.example` as `.envrc` file in root directory and set variables. Then run:
+```
+❯ direnv allow .
+```
 
 ## Run
 
@@ -44,8 +50,22 @@ Run the app and tests like so:
 ❯ poetry run test
 ```
 
-
 ## Additional Help
+
+### Set Python Versions
+
+Set the local application-specific Python versions into `.python-version`.
+```
+❯ pyenv local 3.8.2 3.7.7
+```
+
+### Add Dependencies
+
+Add more dependencies from external or internal repos.
+```
+❯ poetry add pybueno
+❯ poetry add pendulum@^2.0.5
+```
 
 ### Define Commands
 
@@ -65,15 +85,9 @@ You can execute it like so:
 ❯ poetry run my-script
 ```
 
-### Add Dependencies
+### Poetry Help
 
-Add more dependencies from external or internal repos:
-```
-❯ poetry add pybueno
-❯ poetry add pendulum@^2.0.5
-```
-
-### For more help
+Check out Poetry [docs](https://python-poetry.org/docs/) or execute:
 ```
 ❯ poetry -h
 ```
