@@ -15,19 +15,23 @@ Store the credentials of nexus internal repository. If you do not specify the pa
 
 ## Setup Virtual Environment
 
-Install the Python version and activate the environment locally under `.venv` directory.
-
+Install the Python version using `pyenv`.
 ```
 ❯ pyenv install 3.8.2
+```
+Additionaly, you can set the local application-specific Python version into `.python-version'.
+```
 ❯ pyenv local 3.8.2
 ```
 
 ## Resolve Dependencies
 
-Install all the dependencies
+Create and activate the virtual environment inside the project's root under `.venv` directory and then install all the dependencies.
 ```
 ❯ poetry install
 ```
+
+Virtual env has been set to be in project. Check out `poetry.toml`.
 
 ## Run
 
