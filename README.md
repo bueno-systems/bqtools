@@ -13,7 +13,7 @@ Store the credentials of nexus internal repository. If you do not specify the pa
 ❯ poetry config http-basic.bueno username password
 ```
 
-## Setup Virtual Environment
+## Install Application-specific Python
 
 Install the Python version using `pyenv`.
 ```
@@ -24,14 +24,14 @@ Additionaly, you can set the local application-specific Python version into `.py
 ❯ pyenv local 3.8.2
 ```
 
-## Resolve Dependencies
+## Setup and Resolve Dependencies
 
-Create and activate the virtual environment inside the project's root under `.venv` directory and then install all the dependencies.
+Create and activate the virtual environment inside the project's root directory (`.venv`) and then install all the dependencies.
 ```
 ❯ poetry install
 ```
 
-Virtual env has been set to be in project. Check out `poetry.toml`.
+Virtual env has been set to be in-project. Check out `poetry.toml` for settings.
 
 ## Run
 
