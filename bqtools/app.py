@@ -1,4 +1,4 @@
-import pandas as pd
+from google.cloud import bigquery
 
 
 def run():

@@ -5,9 +5,8 @@ description = "Bueno-defined persistent functions/scripts on BigQuery by using S
 authors = ["Bueno Systems <hello@buenosystems.com.au>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.2"
-pandas = "^1.0.3"
-google-api-core = "^1.17.0"
+python = "^3.7"
+google-cloud-bigquery = "^1.24.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
