@@ -1,11 +1,14 @@
 stages:
-  - Test
+  - test
+  - deploy
 
 .python:
   image: python:3.8-slim-buster
 
 .modules:
   before_script:
+    - echo $BQ_SERVICE_ACCOUNT_JSON > svcaccount.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/svcaccount.json
     - pip3 install poetry
     - poetry config http-basic.bueno $NEXUS_USERNAME $NEXUS_PASSWORD
     - poetry config virtualenvs.in-project true
@@ -15,14 +18,24 @@ stages:
     paths:
       - .venv/
 
-Test:
-  stage: Test
-  allow_failure: false
+test:
+  stage: test
   extends:
     - .python
     - .modules
   script:
-    - poetry run test
+    - poetry run pytest -v
   variables:
     GOOGLE_CLOUD_PROJECT: 'au-staging'
-    GOOGLE_APPLICATION_CREDENTIALS: '' # TODO
+
+deploy:
+  stage: deploy
+  only: ["master"]
+  when: manual
+  extends:
+    - .python
+    - .modules
+  script:
+    - poetry run app
+  variables:
+    GOOGLE_CLOUD_PROJECT: 'au-production'
