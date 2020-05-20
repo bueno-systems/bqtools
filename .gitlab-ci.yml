@@ -1,0 +1,28 @@
+stages:
+  - Test
+
+.python:
+  image: python:3.8-slim-buster
+
+.modules:
+  before_script:
+    - pip3 install poetry
+    - poetry config http-basic.bueno $NEXUS_USERNAME $NEXUS_PASSWORD
+    - poetry config virtualenvs.in-project true
+    - poetry install -vv
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .venv/
+
+Test:
+  stage: Test
+  allow_failure: false
+  extends:
+    - .python
+    - .modules
+  script:
+    - poetry run test
+  variables:
+    GOOGLE_CLOUD_PROJECT: 'au-staging'
+    GOOGLE_APPLICATION_CREDENTIALS: '' # TODO
