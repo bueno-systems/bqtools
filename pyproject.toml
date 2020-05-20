@@ -15,7 +15,6 @@ pylint = "^2.5.2"
 [[tool.poetry.source]]
 name = "bueno"
 url = "https://nexus.bueno-analytics.com/repository/pypi-group/simple"
-secondary = true
 
 [tool.poetry.scripts]
 app = "bqtools.app:run"
