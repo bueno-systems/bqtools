@@ -28,7 +28,17 @@ test:
   variables:
     GOOGLE_CLOUD_PROJECT: 'au-staging'
 
-deploy:
+staging:
+  stage: deploy
+  extends:
+    - .python
+    - .modules
+  script:
+    - poetry run app
+  variables:
+    GOOGLE_CLOUD_PROJECT: 'au-staging'
+
+production:
   stage: deploy
   only: ["master"]
   when: manual
