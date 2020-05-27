@@ -1,5 +1,5 @@
  -- Retrieves operating hours of the weekday.
- CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.getOperatingHours`(
+ CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(
   `ts` TIMESTAMP,
   `tz` STRING,
   `hours` STRUCT<
@@ -24,7 +24,7 @@
 );
 
 -- Checks if the timestamp is within the operating hours.
- CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.inOperatingHours`(
+ CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.inOperatingHours`(
   `ts` TIMESTAMP,
   `tz` STRING,
   `hours` STRUCT<
@@ -37,13 +37,13 @@
     sunday STRUCT<`start` TIME, `end` TIME>
   >
 ) RETURNS BOOL AS (
-  TIME(`ts`, `tz`) >= `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`,  `hours`).`start`
+  TIME(`ts`, `tz`) >= `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`,  `hours`).`start`
     AND
-  TIME(`ts`, `tz`) < `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `hours`).`end`
+  TIME(`ts`, `tz`) < `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `hours`).`end`
 );
 
 -- Checks if the timestamp is outside the operating hours.
- CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.notInOperatingHours`(
+ CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.notInOperatingHours`(
   `ts` TIMESTAMP,
   `tz` STRING,
   `hours` STRUCT<
@@ -56,13 +56,13 @@
     sunday STRUCT<`start` TIME, `end` TIME>
   >
 ) RETURNS BOOL AS (
-  (TIME(`ts`, `tz`) >= TIME(00, 00, 00) AND TIME(`ts`, `tz`) < `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `hours`).`start`)
+  (TIME(`ts`, `tz`) >= TIME(00, 00, 00) AND TIME(`ts`, `tz`) < `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `hours`).`start`)
     OR
-  (TIME(`ts`, `tz`) >= `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `hours`).`end` AND TIME(`ts`, `tz`) <= TIME(23, 59, 59))
+  (TIME(`ts`, `tz`) >= `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `hours`).`end` AND TIME(`ts`, `tz`) <= TIME(23, 59, 59))
 );
 
 -- Checks if the timestamp is within the operating hours.
- CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.timeInHours`(
+ CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.timeInHours`(
   `time` TIME,
   `hours` STRUCT<`start` TIME, `end` TIME>
 ) RETURNS BOOL AS (
@@ -71,7 +71,7 @@
   `time` < `hours`.`end`
 );
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.timeNotInHours`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.timeNotInHours`(
   `time` TIME,
   `hours` STRUCT<`start` TIME, `end` TIME>
 ) RETURNS BOOL AS (
@@ -81,7 +81,7 @@ CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.timeNotInHours`(
 );
 
 -- Retrieves operating hours of the weekday, considering equip hours, site hours and default operating hours respectively.
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.getEventualOperatingHours`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.getEventualOperatingHours`(
   `ts` TIMESTAMP,
   `tz` STRING,
   `siteHours` STRUCT<
@@ -104,17 +104,17 @@ CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.getEventualOperatingHours`(
   >
 ) RETURNS STRUCT<`start` TIME, `end` TIME> AS (
   CASE
-    WHEN `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `equipHours`) IS NOT NULL
-      THEN `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `equipHours`)
-    WHEN `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `siteHours`) IS NOT NULL
-      THEN `{{ project_id }}.bqtools.getOperatingHours`(`ts`, `tz`, `siteHours`)
+    WHEN `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `equipHours`) IS NOT NULL
+      THEN `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `equipHours`)
+    WHEN `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `siteHours`) IS NOT NULL
+      THEN `{{ project_id }}.{{ dataset_id }}.getOperatingHours`(`ts`, `tz`, `siteHours`)
     ELSE
       STRUCT(TIME(06, 00, 00), TIME(19, 00, 00))
   END
 );
 
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.includes`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.includes`(
   `tags` ARRAY<STRING>,
   `inList` ARRAY<STRING>
 ) RETURNS BOOL
@@ -122,7 +122,7 @@ LANGUAGE js AS """
   return tags.every(tag => inList.includes(tag))
 """;
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.excludes`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.excludes`(
   `tags` ARRAY<STRING>,
   `inList` ARRAY<STRING>
 ) RETURNS BOOL
@@ -130,33 +130,33 @@ LANGUAGE js AS """
   return !tags.some(tag => inList.includes(tag))
 """;
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.isMdaMeter`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.isMdaMeter`(
   `equipTags` ARRAY<STRING>
 ) RETURNS BOOL AS (
-  `{{ project_id }}.bqtools.includes`(['meter', 'mda', 'siteMeter'], `equipTags`)
+  `{{ project_id }}.{{ dataset_id }}.includes`(['meter', 'mda', 'siteMeter'], `equipTags`)
 );
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.isSolarMeter`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.isSolarMeter`(
   `equipTags` ARRAY<STRING>,
   `equipTotalMeterType` STRING
 ) RETURNS BOOL AS (
-  `{{ project_id }}.bqtools.includes`(['meter'], `equipTags`) AND `equipTotalMeterType` = 'SOLAR'
+  `{{ project_id }}.{{ dataset_id }}.includes`(['meter'], `equipTags`) AND `equipTotalMeterType` = 'SOLAR'
 );
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.isEnergyPoint`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.isEnergyPoint`(
   `pointTags` ARRAY<STRING>
 ) RETURNS BOOL AS (
-  `{{ project_id }}.bqtools.includes`(['cleaned', 'energy', 'intervalHistory', 'processedData'], `pointTags`)
+  `{{ project_id }}.{{ dataset_id }}.includes`(['cleaned', 'energy', 'intervalHistory', 'processedData'], `pointTags`)
 );
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.isPowerPoint`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.isPowerPoint`(
   `pointTags` ARRAY<STRING>
 ) RETURNS BOOL AS (
-  `{{ project_id }}.bqtools.includes`(['power', 'sensor'], `pointTags`)
+  `{{ project_id }}.{{ dataset_id }}.includes`(['power', 'sensor'], `pointTags`)
 );
 
-CREATE OR REPLACE FUNCTION `{{ project_id }}.bqtools.isPerformancePoint`(
+CREATE OR REPLACE FUNCTION `{{ project_id }}.{{ dataset_id }}.isPerformancePoint`(
   `pointTags` ARRAY<STRING>
 ) RETURNS BOOL AS (
-  `{{ project_id }}.bqtools.includes`(['pf', 'sensor'], `pointTags`)
+  `{{ project_id }}.{{ dataset_id }}.includes`(['pf', 'sensor'], `pointTags`)
 );
