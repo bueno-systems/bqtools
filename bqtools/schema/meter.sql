@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `{{ project_id }}.{{ dataset_id }}.meter`
   `point_name` STRING,
   `point_unit` STRING NOT NULL,
   `point_tags` ARRAY<STRING>,
-  `point_decommissioned` STRING NOT NULL
+  `point_decommissioned` BOOLEAN NOT NULL
 )
 PARTITION BY `date`
 CLUSTER BY `date`, `project_key`, `site_id`
