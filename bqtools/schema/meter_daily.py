@@ -5,7 +5,7 @@ client = bigquery.Client()
 
 def create_or_replace():
     project_id = os.environ['GOOGLE_CLOUD_PROJECT']
-    dataset_id = 'bqstudio'
+    dataset_id = 'reports'
 
     directory = os.path.dirname(os.path.realpath(__file__))
     with open('{}/meter_daily.sql'.format(directory), 'r') as file :

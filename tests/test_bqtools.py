@@ -13,5 +13,5 @@ def test_connected_project():
 def test_required_datasets():
     client = bigquery.Client()
     available = list(map(lambda dataset: dataset.dataset_id, client.list_datasets()))
-    required = ['bqstudio', 'bqtools']
+    required = ['reports', 'bqtools']
     assert all(item in available for item in required) == True
