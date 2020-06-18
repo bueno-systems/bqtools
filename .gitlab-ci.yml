@@ -24,9 +24,10 @@ test:
     - .python
     - .modules
   script:
-    - poetry run pytest -v
+    - poetry run pytest --pspec tests/
   variables:
     GOOGLE_CLOUD_PROJECT: 'au-staging'
+    GOOGLE_CLOUD_LOCATION: 'australia-southeast1'
 
 staging:
   stage: deploy
@@ -34,9 +35,10 @@ staging:
     - .python
     - .modules
   script:
-    - poetry run app
+    - poetry run migrate
   variables:
     GOOGLE_CLOUD_PROJECT: 'au-staging'
+    GOOGLE_CLOUD_LOCATION: 'australia-southeast1'
 
 production:
   stage: deploy
@@ -46,6 +48,7 @@ production:
     - .python
     - .modules
   script:
-    - poetry run app
+    - poetry run migrate
   variables:
     GOOGLE_CLOUD_PROJECT: 'au-production'
+    GOOGLE_CLOUD_LOCATION: 'australia-southeast1'
