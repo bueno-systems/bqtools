@@ -1,11 +1,17 @@
-from bqtools.functions import all as funcs
-from bqtools.schema import meter
-from bqtools.schema import meter_daily
-from google.cloud import bigquery
+from bqtools.migration import commands
 
-# @TODO: implement a database migration mechanism
 
-def run():
-    funcs.create_or_replace()
-    meter.create_or_replace()
-    meter_daily.create_or_replace()
+def migrate():
+    commands.migrate()
+
+
+def rollback():
+    commands.rollback()
+
+
+def refresh():
+    commands.refresh()
+
+
+def reset():
+    commands.reset()

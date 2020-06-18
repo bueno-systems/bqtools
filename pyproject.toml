@@ -23,7 +23,6 @@ migrate = "bqtools.app:migrate"
 rollback = "bqtools.app:rollback"
 reset = "bqtools.app:reset"
 refresh = "bqtools.app:refresh"
-clean = "bqtools.app:clean"
 test = "scripts:pytest"
 format = "scripts:autopep8"
 
