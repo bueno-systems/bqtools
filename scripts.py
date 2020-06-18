@@ -1,7 +1,14 @@
 import subprocess
+import sys
 
 
 def pytest():
     subprocess.run(
-        ['python', '-m', 'pytest', 'tests/', '-v']
+        ['python', '-m', 'pytest', '--pspec', 'tests/'] + sys.argv[1:]
+    )
+
+
+def autopep8():
+    subprocess.run(
+        ['python', '-m', 'autopep8', '-i', '-r', '-a', '-a', '.']
     )

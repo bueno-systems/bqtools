@@ -1,2 +1,3 @@
 export GOOGLE_APPLICATION_CREDENTIALS="your-service-account-file.json"
-export GOOGLE_CLOUD_PROJECT="your-gcp-project"
+export GOOGLE_CLOUD_PROJECT="au-staging"
+export GOOGLE_CLOUD_LOCATION="australia-southeast1"

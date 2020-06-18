@@ -1,24 +1,31 @@
 [tool.poetry]
 name = "bqtools"
-version = "0.1.0"
-description = "Bueno-defined persistent functions/scripts on BigQuery by using SQL expressions or JavaScript"
+version = "1.0.0"
+description = "Versioned or repeatable data definition statements on BigQuery"
 authors = ["Bueno Systems <hello@buenosystems.com.au>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 google-cloud-bigquery = "^1.24.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pylint = "^2.5.2"
+autopep8 = "^1.5.3"
+pytest-pspec = "^0.0.4"
 
 [[tool.poetry.source]]
 name = "bueno"
 url = "https://nexus.bueno-analytics.com/repository/pypi-group/simple"
 
 [tool.poetry.scripts]
-app = "bqtools.app:run"
+migrate = "bqtools.app:migrate"
+rollback = "bqtools.app:rollback"
+reset = "bqtools.app:reset"
+refresh = "bqtools.app:refresh"
+clean = "bqtools.app:clean"
 test = "scripts:pytest"
+format = "scripts:autopep8"
 
 [build-system]
 requires = ["poetry>=0.12"]
