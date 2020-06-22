@@ -23,16 +23,19 @@ def query(entry, location=LOCATION, directory=DIRECTORY):
 def commit(entry, rollback=False):
     '''
     Commit or roll back a regular entry `V`.
+    This method only accepts a regular or repeatable entry, `V` or `R`.
     If rollback flag is set to True, the matched undo entry `U` will be committed instead.
-    The rollback is only run when a matched undo entry `U` does exist for the entry.
     '''
-    entry = get_rollback_entry(entry) if rollback else entry
-    if entry and not is_done(entry):
-        print('{} {}'.format('ROLLING BACK' if rollback else 'RUNNING', entry))
-        query(entry)
+    if is_undo(entry) or (rollback and not is_done(entry)):
+        return
+
+    target = get_undo_entry(entry) if rollback else entry
+    if target and not is_done(target):
+        print('{} {}'.format('ROLLING BACK' if rollback else 'RUNNING', target))
+        query(target)
 
 
-def mark(entry, slot_millis, done=False):
+def mark(entry, slot_millis, done=False, location=LOCATION, table=TABLE):
     '''
     Mark an entry as succeeded or failed.
     '''
@@ -52,8 +55,8 @@ def mark(entry, slot_millis, done=False):
     query = '''
         INSERT INTO {} VALUES
         (@type, @version, @description, @slot_millis, @success, CURRENT_TIMESTAMP(), @entry, @checksum)
-    '''.format(TABLE)
-    client.query(query, job_config=job_config).result()
+    '''.format(table)
+    client.query(query, job_config=job_config, location=location).result()
     print('{}'.format('DONE' if done else 'FAILED'))
 
 
@@ -97,7 +100,20 @@ def get_path(entry, directory):
     return '{}/{}'.format(directory, entry)
 
 
-def get_rollback_entry(entry, directory=DIRECTORY):
+def get_regular_entry(entry, directory=DIRECTORY):
+    '''
+    Check whether an entry has a regular version or not.
+    Returns regular entry if there is one or False otherwise.
+    '''
+    if not is_undo(entry):
+        return False
+    entry = Prefix.V.name + entry[1:]
+    if path.isfile(get_path(entry, directory)):
+        return entry
+    return False
+
+
+def get_undo_entry(entry, directory=DIRECTORY):
     '''
     Check whether an entry has an undo version or not.
     Returns undo entry if there is one or False otherwise.
@@ -144,7 +160,7 @@ def get_parts(entry):
     return dic
 
 
-def is_done(entry):
+def is_done(entry, table=TABLE):
     '''
     Check whether a regular entry `V` or repeatable entry `R` has been already committed or not.
     Repeatable entry is re-applied only when its checksum changes.
@@ -157,7 +173,7 @@ def is_done(entry):
         WHERE `entry` = @entry AND `success` = TRUE AND `type` = @type
         ORDER BY `installed_at` DESC
         LIMIT 1
-    '''.format(TABLE)
+    '''.format(table)
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter('entry', 'STRING', entry),

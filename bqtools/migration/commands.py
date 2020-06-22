@@ -1,5 +1,5 @@
-from .setup import create_history_dataset, create_history_table, delete_history_dataset, delete_history_table
-from .utils import list_entries, is_done, is_regular, commit, get_rollback_entry
+from .setup import create_history_dataset, create_history_table, delete_history_table
+from .utils import list_entries, commit
 
 
 def migrate():
@@ -21,7 +21,7 @@ def migrate():
 
 def rollback():
     '''
-    Roll back all of the migrations, then destroy the base dataset and schema history table.
+    Roll back all of the migrations, then destroy the schema history table.
     All undo entries `U` will be queried in reverse order.
     ONLY use if you have provided appropriate undos for all versioned migrations.
     '''
