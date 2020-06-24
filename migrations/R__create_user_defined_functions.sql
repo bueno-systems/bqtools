@@ -155,3 +155,15 @@ CREATE OR REPLACE FUNCTION `bqtools.isPerformancePoint`(
 ) RETURNS BOOL AS (
   `bqtools.includes`(['pf', 'sensor'], `pointTags`)
 );
+
+CREATE OR REPLACE FUNCTION `bqtools.cleanTags`(
+  `tags` ARRAY<STRING>
+) RETURNS ARRAY<STRING>
+LANGUAGE js AS """
+  const keep = [
+    'his','sensor','intervalHistory','energy','raw','reactiveEnergy','cleaned','apparentPower',
+    'reactivePower','pf','power','meterQuality','kwh','kvarh','decommissioned','lowUsage','cumulative',
+    'performanceMeter','meter','elec','mda','siteMeter','equip','crucialMeter','noUsage'
+  ]
+  return tags.filter(tag => keep.includes(tag))
+""";
