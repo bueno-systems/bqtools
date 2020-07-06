@@ -5,9 +5,9 @@ from bqtools.migration.utils import read_entry
 
 
 def test_reading_entry():
-    '''
+    """
     reads the content of an entry
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         with open(path.join(directory, 'file.sql'), 'w') as file:
             file.write('test')

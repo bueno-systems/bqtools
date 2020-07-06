@@ -4,9 +4,9 @@ from bqtools.migration.types import Prefix
 
 
 def test_getting_false():
-    '''
+    """
     retrieves false for invalid entry
-    '''
+    """
     dic = get_parts('whatever.sql')
     assert dic == False
 
@@ -15,9 +15,9 @@ def test_getting_false():
 
 
 def test_getting_parts():
-    '''
+    """
     retrieves parts of the naming pattern for validation.
-    '''
+    """
     dic = get_parts('V1.2.3__this_is_description.sql')
     assert dic['description'] == 'this is description'
     assert dic['prefix'] == Prefix.V.name
@@ -33,9 +33,9 @@ def test_getting_parts():
 
 
 def test_ignoring_version():
-    '''
+    """
     ignores the version for valid repeatable entry
-    '''
+    """
     dic = get_parts('R1.2.3__this_is_description.sql')
     assert dic['description'] == 'this is description'
     assert dic['prefix'] == Prefix.R.name

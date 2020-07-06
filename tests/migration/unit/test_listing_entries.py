@@ -5,18 +5,18 @@ from bqtools.migration.utils import list_entries
 
 
 def test_empty_list():
-    '''
+    """
     returns an empty list when reading directory is empty
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         entries = list_entries(directory=directory)
         assert entries == []
 
 
 def test_ignoring_anti_patterns():
-    '''
+    """
     ignores all anti-pattern migration entries
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         with open(path.join(directory, 'whatever.sql'), 'w'):
             pass
@@ -38,9 +38,9 @@ def test_ignoring_anti_patterns():
 
 
 def test_ignoring_undos():
-    '''
+    """
     ignores undo migration entries
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         with open(path.join(directory, 'U1__test.sql'), 'w'):
             pass
@@ -51,9 +51,9 @@ def test_ignoring_undos():
 
 
 def test_sorted_listing():
-    '''
+    """
     retrieves a list of valid regular and repeatable migration entries in order
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         with open(path.join(directory, 'R__2.sql'), 'w'):
             pass
@@ -76,9 +76,9 @@ def test_sorted_listing():
 
 
 def test_reversed_listing():
-    '''
+    """
     retrieves a list of valid regular migration entries in reverse order
-    '''
+    """
     with tempfile.TemporaryDirectory() as directory:
         with open(path.join(directory, 'R__2.sql'), 'w'):
             pass
