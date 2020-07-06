@@ -1,3 +1,4 @@
 export GOOGLE_APPLICATION_CREDENTIALS="your-service-account-file.json"
 export GOOGLE_CLOUD_PROJECT="au-staging"
 export GOOGLE_CLOUD_LOCATION="australia-southeast1"
+export MIGRATIONS_DIRECTORY="tests/migration/integration/mgrtns"
