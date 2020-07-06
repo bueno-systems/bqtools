@@ -4,7 +4,7 @@ import sys
 
 def pytest():
     subprocess.run(
-        ['python', '-m', 'pytest', '--pspec', 'tests/'] + sys.argv[1:]
+        ['python', '-m', 'pytest', '--pspec', 'tests/', '-s'] + sys.argv[1:]
     )
 
 

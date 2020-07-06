@@ -18,18 +18,29 @@ stages:
     paths:
       - .venv/
 
-test:
+Unit:
   stage: test
   extends:
     - .python
     - .modules
   script:
-    - poetry run pytest --pspec tests/
+    - poetry run pytest --pspec tests/migration/unit
   variables:
-    GOOGLE_CLOUD_PROJECT: 'au-staging'
+    GOOGLE_CLOUD_PROJECT: 'au-test-281401'
+
+Integration:
+  stage: test
+  extends:
+    - .python
+    - .modules
+  script:
+    - poetry run pytest --pspec tests/migration/integration -s
+  variables:
+    MIGRATIONS_DIRECTORY: 'tests/migration/integration/mgrtns'
+    GOOGLE_CLOUD_PROJECT: 'au-test-281401'
     GOOGLE_CLOUD_LOCATION: 'australia-southeast1'
 
-staging:
+Staging:
   stage: deploy
   extends:
     - .python
@@ -40,7 +51,7 @@ staging:
     GOOGLE_CLOUD_PROJECT: 'au-staging'
     GOOGLE_CLOUD_LOCATION: 'australia-southeast1'
 
-production:
+Production:
   stage: deploy
   only: ["master"]
   when: manual
