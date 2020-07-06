@@ -5,30 +5,27 @@ from .config import DATASET, TABLE, LOCATION
 client = bigquery.Client()
 
 
-def create_history_dataset():
-    '''
-    Create the base dataset on specified geographic location. Ignores if already exists.
-    '''
-    dataset = bigquery.Dataset(DATASET)
-    dataset.location = LOCATION
+def create_dataset(dataset_id=DATASET, location=LOCATION):
+    """
+    Create a dataset on specified geographic location. Ignores if already exists.
+    """
+    dataset = bigquery.Dataset(dataset_id)
+    dataset.location = location
     dataset = client.create_dataset(dataset, exists_ok=True)
-    print("The dataset `{}` is up.".format(DATASET))
 
 
-def delete_history_dataset():
-    '''
-    Delete the base dataset. Ignores if not found.
-    '''
-    dataset = bigquery.Dataset(DATASET)
-    dataset = client.delete_dataset(
-        dataset, delete_contents=True, not_found_ok=True)
-    print("The dataset `{}` is down.".format(DATASET))
+def delete_dataset(dataset_id=DATASET):
+    """
+    Delete a dataset. Ignores if not found.
+    """
+    dataset = bigquery.Dataset(dataset_id)
+    client.delete_dataset(dataset, delete_contents=True, not_found_ok=True)
 
 
-def create_history_table():
-    '''
+def create_history_table(table_id=TABLE):
+    """
     Create the schema history table. Ignores if already exists.
-    '''
+    """
     schema = [
         bigquery.SchemaField("type", "STRING", mode="REQUIRED"),
         bigquery.SchemaField("version", "STRING", mode="NULLABLE"),
@@ -39,14 +36,12 @@ def create_history_table():
         bigquery.SchemaField("entry", "STRING", mode="REQUIRED"),
         bigquery.SchemaField("checksum", "STRING", mode="REQUIRED")
     ]
-    table = bigquery.Table(TABLE, schema=schema)
+    table = bigquery.Table(table_id, schema=schema)
     table = client.create_table(table, exists_ok=True)
-    print("The schema history table `{}` is up.".format(TABLE))
 
 
-def delete_history_table():
-    '''
+def delete_history_table(table_id=TABLE):
+    """
     Delete the schema history table. Ignores if not found.
-    '''
-    client.delete_table(TABLE, not_found_ok=True)
-    print("The schema history table `{}` is down.".format(TABLE))
+    """
+    client.delete_table(table_id, not_found_ok=True)

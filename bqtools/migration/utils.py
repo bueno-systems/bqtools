@@ -7,9 +7,9 @@ from .config import DIRECTORY, TABLE, SEPARATOR, EXTENSION, LOCATION
 
 
 def query(entry, location=LOCATION, directory=DIRECTORY):
-    '''
+    """
     Run a query job for a migration entry and mark that as done if there is no error.
-    '''
+    """
     sql = read_entry(entry, directory)
     job = client.query(sql, location=location)
     job.add_done_callback(lambda future: mark(
@@ -21,11 +21,11 @@ def query(entry, location=LOCATION, directory=DIRECTORY):
 
 
 def commit(entry, rollback=False):
-    '''
+    """
     Commit or roll back a regular entry `V`.
     This method only accepts a regular or repeatable entry, `V` or `R`.
     If rollback flag is set to True, the matched undo entry `U` will be committed instead.
-    '''
+    """
     if is_undo(entry) or (rollback and not is_done(entry)):
         return
 
@@ -36,9 +36,9 @@ def commit(entry, rollback=False):
 
 
 def mark(entry, slot_millis, done=False, location=LOCATION, table=TABLE):
-    '''
+    """
     Mark an entry as succeeded or failed.
-    '''
+    """
     parts = get_parts(entry)
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
@@ -52,21 +52,21 @@ def mark(entry, slot_millis, done=False, location=LOCATION, table=TABLE):
         ]
     )
 
-    query = '''
+    query = """
         INSERT INTO {} VALUES
         (@type, @version, @description, @slot_millis, @success, CURRENT_TIMESTAMP(), @entry, @checksum)
-    '''.format(table)
+    """.format(table)
     client.query(query, job_config=job_config, location=location).result()
     print('{}'.format('DONE' if done else 'FAILED'))
 
 
 def list_entries(reverse=False, directory=DIRECTORY):
-    '''
+    """
     Read valid entries from migrations directory.
     Undo entries `U` will not be read here. An undo entry is read and committed when a rollback for regular entry is needed.
     The reverse flag sorts regular entries in reverse order which is suitable for full rollback.
     Repeatable entries `R` come last if reverse flag is off and they are always committed last.
-    '''
+    """
     entries = []
     for (_, _, filenames) in walk(directory):
         entries.extend(filenames)
@@ -83,9 +83,9 @@ def list_entries(reverse=False, directory=DIRECTORY):
 
 
 def read_entry(entry, directory=DIRECTORY):
-    '''
+    """
     Read the content of a migration entry.
-    '''
+    """
     filepath = get_path(entry, directory)
     with open(filepath, 'r') as file:
         sql = file.read()
@@ -94,17 +94,17 @@ def read_entry(entry, directory=DIRECTORY):
 
 
 def get_path(entry, directory):
-    '''
+    """
     Get the full file path of an entry.
-    '''
+    """
     return '{}/{}'.format(directory, entry)
 
 
 def get_regular_entry(entry, directory=DIRECTORY):
-    '''
+    """
     Check whether an entry has a regular version or not.
     Returns regular entry if there is one or False otherwise.
-    '''
+    """
     if not is_undo(entry):
         return False
     entry = Prefix.V.name + entry[1:]
@@ -114,10 +114,10 @@ def get_regular_entry(entry, directory=DIRECTORY):
 
 
 def get_undo_entry(entry, directory=DIRECTORY):
-    '''
+    """
     Check whether an entry has an undo version or not.
     Returns undo entry if there is one or False otherwise.
-    '''
+    """
     if not is_regular(entry):
         return False
     undo_entry = Prefix.U.name + entry[1:]
@@ -127,10 +127,10 @@ def get_undo_entry(entry, directory=DIRECTORY):
 
 
 def get_checksum(entry, directory=DIRECTORY):
-    '''
+    """
     Retrieve a checksum value of file content to store on schema history.
     The checksum is there to detect accidental changes in a file.
-    '''
+    """
     with open(get_path(entry, directory), 'rb') as file:
         data = file.read()
         checksum = blake2b(data).hexdigest()
@@ -138,9 +138,9 @@ def get_checksum(entry, directory=DIRECTORY):
 
 
 def get_parts(entry):
-    '''
+    """
     Retrieve parts of the naming pattern for validation.
-    '''
+    """
     dic = {}
     if not is_valid(entry):
         return False
@@ -161,19 +161,19 @@ def get_parts(entry):
 
 
 def is_done(entry, table=TABLE):
-    '''
+    """
     Check whether a regular entry `V` or repeatable entry `R` has been already committed or not.
     Repeatable entry is re-applied only when its checksum changes.
-    '''
+    """
     checksum = get_checksum(entry)
     parts = get_parts(entry)
 
-    query = '''
+    query = """
         SELECT `success`, `checksum` FROM {}
         WHERE `entry` = @entry AND `success` = TRUE AND `type` = @type
         ORDER BY `installed_at` DESC
         LIMIT 1
-    '''.format(table)
+    """.format(table)
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
             bigquery.ScalarQueryParameter('entry', 'STRING', entry),
@@ -199,9 +199,9 @@ def is_done(entry, table=TABLE):
 
 
 def is_valid(entry):
-    '''
+    """
     Validate the entry name based on naming pattern.
-    '''
+    """
     filename, extension = path.splitext(entry)
     if filename.find(SEPARATOR) == -1 or extension != EXTENSION:
         return False
@@ -219,27 +219,27 @@ def is_valid(entry):
 
 
 def is_regular(entry):
-    '''
+    """
     Check whether an entry is regular `V` or not.
-    '''
+    """
     if is_valid(entry) and entry[0].upper() == Prefix.V.name:
         return True
     return False
 
 
 def is_undo(entry):
-    '''
+    """
     Check whether an entry is undo `U` or not.
-    '''
+    """
     if is_valid(entry) and entry[0].upper() == Prefix.U.name:
         return True
     return False
 
 
 def is_repeatable(entry):
-    '''
+    """
     Check whether an entry is repeatable `R` or not.
-    '''
+    """
     if is_valid(entry) and entry[0].upper() == Prefix.R.name:
         return True
     return False
