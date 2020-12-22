@@ -163,7 +163,8 @@ LANGUAGE js AS """
   const keep = [
     'his','sensor','intervalHistory','energy','raw','reactiveEnergy','cleaned','apparentPower',
     'reactivePower','pf','power','meterQuality','kwh','kvarh','decommissioned','lowUsage','cumulative',
-    'performanceMeter','meter','elec','mda','siteMeter','equip','crucialMeter','noUsage'
+    'performanceMeter','meter','elec','mda','siteMeter','equip','crucialMeter','noUsage',
+    'alarmIssueMeter','highTemp','mediumTemp','lowTemp','virtualMeter'
   ]
   return tags.filter(tag => keep.includes(tag))
 """;
