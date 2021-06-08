@@ -12,7 +12,7 @@ def test_managing_table():
 
     project_name = environ['GOOGLE_CLOUD_PROJECT']
     dataset_name = 'bqtools'
-    table_name = 'schema_history'
+    table_name = environ.get('MIGRATIONS_HISTORY_TABLE', 'schema_history')
 
     dataset_id = '{}.{}'.format(project_name, dataset_name)
     table_id = '{}.{}'.format(dataset_id, table_name)

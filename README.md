@@ -79,7 +79,7 @@ Application default credentials can be acquired by the command below. Do not set
 Run the app and tests like so:
 
 ```
-❯ poetry run app
+❯ poetry run migrate
 ```
 ```
 ❯ poetry run test

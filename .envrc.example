@@ -1,4 +1,5 @@
 export GOOGLE_APPLICATION_CREDENTIALS="your-service-account-file.json"
-export GOOGLE_CLOUD_PROJECT="au-test-281401"
-export GOOGLE_CLOUD_LOCATION="australia-southeast1"
-export MIGRATIONS_DIRECTORY="tests/migration/integration/mgrtns"
+export GOOGLE_CLOUD_PROJECT="project"
+export GOOGLE_CLOUD_LOCATION="location"
+export MIGRATIONS_DIRECTORY="migrations"
+export MIGRATIONS_HISTORY_TABLE="schema_history"

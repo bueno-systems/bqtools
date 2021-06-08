@@ -13,12 +13,13 @@ def test_migration():
 
     migrate()
 
+    history_table = environ.get('MIGRATIONS_HISTORY_TABLE', 'schema_history')
     table_id = '{}.{}.{}'.format(
         environ['GOOGLE_CLOUD_PROJECT'],
         'bqtools',
-        'schema_history')
+        history_table)
     table = client.get_table(table_id)
-    assert table.table_id == 'schema_history'
+    assert table.table_id == history_table
 
     rows = []
     for row in client.list_rows(table_id):

@@ -25,10 +25,11 @@ def test_rollback():
         client.get_table(table_id)
     assert 'Not found' in str(info.value)
 
+    history_table = environ.get('MIGRATIONS_HISTORY_TABLE', 'schema_history')
     table_id = '{}.{}.{}'.format(
         environ['GOOGLE_CLOUD_PROJECT'],
         'bqtools',
-        'schema_history')
+        history_table)
     with pytest.raises(Exception) as info:
         client.get_table(table_id)
     assert 'Not found' in str(info.value)
